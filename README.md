@@ -9,7 +9,7 @@ I combine my stability-focused background in enterprise systems with the creativ
 - 🔭 I’m currently working on: **Legacy System Migration & Maintenance (VB.NET)**
 - 🌱 I’m currently learning: **Flutter, Dart, and Riverpod**
 - 💼 I hold: **Oracle Certified Associate, Java SE 8 Programmer (Java Silver)**
-- 📝 I write technical articles on: [Zenn]([[Your Zenn URL](https://zenn.dev/0570yh)])
+- 📝 I write technical articles on: [Zenn](https://zenn.dev/0570yh)
 
 ---
 
@@ -20,8 +20,8 @@ I combine my stability-focused background in enterprise systems with the creativ
 * **Tools:** Visual Studio, VS Code, Git
 
 ### 📫 Connect with me
-* [Zenn (Tech Blog)]([https://zenn.dev/0570yh])
-* [LinkedIn]([https://www.linkedin.com/in/0570yh/])
+* [Zenn (Tech Blog)](https://zenn.dev/0570yh)
+* [LinkedIn](https://www.linkedin.com/in/0570yh/)
 
 
 ![Flutter](https://img.shields.io/badge/Flutter-%2302569B.svg?style=for-the-badge&logo=Flutter&logoColor=white)
