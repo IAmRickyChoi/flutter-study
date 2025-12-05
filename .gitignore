@@ -1,0 +1,68 @@
+# ----------------------------------------------------------
+# 1. Dart & Pub 
+# ----------------------------------------------------------
+# See https://www.dartlang.org/guides/libraries/private-files
+
+# Files and directories created by pub
+.dart_tool/
+.packages
+build/
+
+# Note: We keep 'pubspec.lock' in Git to ensure version consistency.
+# If you really want to ignore it, uncomment the line below:
+# pubspec.lock
+
+# Directory created by dartdoc
+doc/api/
+
+# dotenv environment variables file (Security)
+.env*
+
+# Avoid committing generated Javascript files (Dart to JS):
+*.dart.js
+*.info.json
+*.js
+*.js_
+*.js.deps
+*.js.map
+
+# ----------------------------------------------------------
+# 2. Flutter Specific
+# ----------------------------------------------------------
+.flutter-plugins
+.flutter-plugins-dependencies
+
+# ----------------------------------------------------------
+# 3. Android Generated Files
+# ----------------------------------------------------------
+android/**/*.gradle
+android/**/gradlew
+android/**/gradlew.bat
+android/local.properties
+android/.gradle
+android/app/build/
+android/.idea/
+android/key.properties
+
+# ----------------------------------------------------------
+# 4. iOS Generated Files
+# ----------------------------------------------------------
+ios/Flutter/Generated.xcconfig
+ios/Flutter/flutter_export_environment.sh
+ios/Pods/
+ios/.symlinks/
+ios/Podfile.lock
+
+# ----------------------------------------------------------
+# 5. IDE & Operating System Files
+# ----------------------------------------------------------
+# VS Code & IntelliJ
+.idea/
+.vscode/
+*.swp
+*.swo
+*.iml
+
+# Mac & Windows
+.DS_Store
+Thumbs.db
