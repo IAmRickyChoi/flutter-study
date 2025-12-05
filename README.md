@@ -1,35 +1,30 @@
-# flutter-study
-
-**Software Engineer based in Japan 🇯🇵**
-
-I have over 3 years of experience in **VB.NET** development and system operation. Currently, I am passionate about transitioning into **Mobile App Development** using **Flutter**.
-
-I combine my stability-focused background in enterprise systems with the creativity of cross-platform mobile development.
-
-- 🔭 I’m currently working on: **Legacy System Migration & Maintenance (VB.NET)**
-- 🌱 I’m currently learning: **Flutter, Dart, and Riverpod**
-- 💼 I hold: **Oracle Certified Associate, Java SE 8 Programmer (Java Silver)**
-- 📝 I write technical articles on: [Zenn](https://zenn.dev/0570yh)
-
----
-
-### 🛠 Tech Stack
-* **Languages:** VB.NET, Java, Dart
-* **Mobile:** Flutter
-* **Database:** SQL Server, Oracle
-* **Tools:** Visual Studio, VS Code, Git
-
-### 📫 Connect with me
-* [Zenn (Tech Blog)](https://zenn.dev/0570yh)
-* [LinkedIn](https://www.linkedin.com/in/0570yh/)
-
+# 📱 Flutter Study Repository
 
 ![Flutter](https://img.shields.io/badge/Flutter-%2302569B.svg?style=for-the-badge&logo=Flutter&logoColor=white)
-![Dart](https://img.shields.io/badge/dart-%230175C2.svg?style=for-the-badge&logo=dart&logoColor=white)
+![Last Commit](https://img.shields.io/github/last-commit/IAmRickyChoi/flutter-study?color=green&style=for-the-badge)
 
-![.NET](https://img.shields.io/badge/.NET-512BD4.svg?style=for-the-badge&logo=dotnet&logoColor=white)
-![Visual Studio](https://img.shields.io/badge/Visual%20Studio-5C2D91.svg?style=for-the-badge&logo=visual-studio&logoColor=white)
-![Java](https://img.shields.io/badge/java-%23ED8B00.svg?style=for-the-badge&logo=openjdk&logoColor=white)
+## 📖 Overview
+This repository serves as a **personal archive** for my journey in learning Flutter and Dart.
+As a Software Engineer transitioning from a **VB.NET & Java** background, I use this space to experiment with code, understand the declarative UI paradigm, and build best practices for mobile development.
 
-![Git](https://img.shields.io/badge/git-%23F05033.svg?style=for-the-badge&logo=git&logoColor=white)
-![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)
+## 📂 Repository Structure
+The code in this repository is organized by **topic and complexity**.
+Each directory represents a specific concept or a mini-project.
+
+> **Note:** Please check the source code folders for the most recent updates and examples.
+
+## 💡 Topics Covered
+I am continuously adding examples related to the following core concepts:
+
+* **Dart Fundamentals:** Syntax, OOP, and Asynchronous Programming (Futures/Streams).
+* **Flutter UI:** Widget trees, Layouts (Row/Column/Stack), and Responsive Design.
+* **State Management:** Managing app state efficiently (e.g., Provider, Riverpod, Bloc).
+* **Networking:** API integration using packages like `http` or `dio`.
+* **Architecture:** Exploring clean architecture and MVVM patterns.
+
+## 🔗 References
+* [Official Flutter Documentation](https://flutter.dev/docs)
+* [Dart Language Tour](https://dart.dev/guides/language/language-tour)
+
+---
+*Created by [Ricky Choi](https://github.com/IAmRickyChoi)*
