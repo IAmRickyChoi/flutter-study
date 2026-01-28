@@ -1,85 +1,32 @@
 import 'dart:async';
 import 'dart:isolate';
 
-// [요구사항 1] Result 패턴 정의 (Sealed Class)
-sealed class Result<T> {}
-class Success<T> extends Result<T> { final T data; Success(this.data); }
-class Failure<T> extends Result<T> { final String error; Failure(this.error); }
+// 1. Result 패턴을 위한 Sealed Class를 정의하세요.
+// TODO: 여기에 Result, Success, Failure 클래스를 작성하세요.
 
-// 처리할 작업 정의
-class WorkTask {
-  final int id;
-  final int input;
-  WorkTask(this.id, this.input);
+
+// 2. Isolate에서 실행될 무거운 작업(Worker)을 정의하세요.
+// TODO: SendPort를 통해 메인 스레드와 통신하며 데이터를 처리하는 로직을 작성하세요.
+void worker(SendPort mainSendPort) async {
+  // 여기에 ReceivePort 생성 및 메인 스레드와의 핸드셰이크 로직을 작성하세요.
 }
 
-// [요구사항 2] 무거운 작업을 처리할 Isolate 함수
-// 실제로 0.5초 대기하며 input의 제곱을 구한다고 가정합니다.
-void worker(SendPort sendPort) async {
-  final port = ReceivePort();
-  sendPort.send(port.sendPort);
-
-  await for (var task in port) {
-    if (task is WorkTask) {
-      try {
-        // 의도적인 부하 및 에러 상황 시뮬레이션
-        if (task.input < 0) throw "음수는 처리할 수 없습니다.";
-        await Future.delayed(Duration(milliseconds: 500));
-        
-        // 성공 결과 전송
-        sendPort.send(Success<int>(task.input * task.input));
-      } catch (e) {
-        // 실패 결과 전송
-        sendPort.send(Failure<int>(e.toString()));
-      }
-    }
-  }
-}
-
-// [요구사항 3] 메인 스케줄러 클래스
+// 3. 작업을 관리하고 스트림을 반환하는 스케줄러를 정의하세요.
 class TaskScheduler {
-  Stream<Result<int>> processTasks(List<int> inputs) async* {
-    final receivePort = ReceivePort();
-    await Isolate.spawn(worker, receivePort.sendPort);
-
-    // Isolate과 통신 준비
-    final events = receivePort.asBroadcastStream();
-    final SendPort workerSendPort = await events.first;
-
-    for (var input in inputs) {
-      workerSendPort.send(WorkTask(inputs.indexOf(input), input));
-    }
-
-    // 결과 수집
-    // TODO: inputs의 개수만큼 결과를 기다렸다가 yield 하세요.
-    // 힌트: await for 또는 events.skip(1).take(inputs.length) 활용
-    int count = 0;
-    await for (var result in events) {
-      if (result is Result<int>) {
-        yield result;
-        count++;
-        if (count == inputs.length) break;
-      }
-    }
-    receivePort.close();
+  // TODO: Isolate을 생성하고 작업을 배분한 뒤 결과를 스트림으로 내보내세요.
+  Stream<Result<int>> process(List<int> inputs) async* {
+    // 여기에 Isolate 생성 및 데이터 전송/수신 로직을 작성하세요.
   }
 }
 
 void main() async {
-  print("🚀 병렬 작업 엔진 가동 (Isolate 활성화)...");
-  
+  print("🚀 일본 기업 코딩 테스트: 병렬 처리 엔진 가동...");
+
   final scheduler = TaskScheduler();
-  final numbers = [10, -5, 20, 30, 40];
+  final data = [10, 25, -5, 40, 12]; // -5는 에러를 유도하는 데이터로 활용해 보세요.
 
-  // [요구사항 4] 결과 처리 (Pattern Matching 사용)
-  await for (final res in scheduler.processTasks(numbers)) {
-    final message = switch (res) {
-      // TODO: Success와 Failure 케이스를 패턴 매칭으로 처리하세요.
-      Success(data: var d) => "✅ 성공: 결과값 $d",
-      Failure(error: var e) => "❌ 에러 발생: $e",
-    };
-    print(message);
-  }
-
-  print("🏁 모든 작업 완료");
+  // 4. 결과를 출력하세요.
+  // TODO: scheduler.process(data)를 구독하고 패턴 매칭으로 결과를 출력하세요.
+  
+  print("🏁 모든 작업 처리 완료.");
 }
