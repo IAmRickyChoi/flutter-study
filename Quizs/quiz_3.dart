@@ -1,66 +1,63 @@
-// [요구사항 1] Sealed Class 정의
-sealed class Transaction {
-  final String description;
-  final double amount;
-  Transaction(this.description, this.amount);
+// [요구사항 1] 봉인된 클래스로 할인 정책 설계
+sealed class Discount {}
+class Percentage extends Discount { final double rate; Percentage(this.rate); }
+class Fixed extends Discount { final int amount; Fixed(this.amount); }
+class Bundle extends Discount { 
+  final int minCount; 
+  final int discountAmount; 
+  Bundle(this.minCount, this.discountAmount); 
 }
 
-class Income extends Transaction {
-  Income(String description, double amount) : super(description, amount);
-}
+// 장바구니 아이템 타입 별칭 (이름이 있는 레코드 활용)
+typedef CartItem = ({String name, int price, int count, Discount? discount});
 
-class Expense extends Transaction {
-  final String category;
-  Expense(String description, double amount, this.category) : super(description, amount);
-}
-
-// [요구사항 2 & 3] List 확장 메서드와 Named Record
-extension TransactionAnalysis on List<Transaction> {
-  // TODO: 이름이 있는 레코드 ({double totalIncome, double totalExpense, int count})를 반환하세요.
-  ({double totalIncome, double totalExpense, int count}) getSummary() {
+// [요구사항 4] 리스트 확장 메서드 구현
+extension DiscountEngine on List<CartItem> {
+  // TODO: 최종 가격과 할인 총액을 이름이 있는 레코드로 반환하는 함수를 작성하세요.
+  ({double finalPrice, double totalDiscount}) calculateTotal() {
     return fold(
-      (totalIncome: 0.0, totalExpense: 0.0, count: 0),
-      (acc, tx) => switch (tx) {
-        // TODO: 패턴 매칭을 사용하여 Income일 때와 Expense일 때의 계산식을 완성하세요.
-        Income(:var amount) => (
-            totalIncome: acc.totalIncome + amount,
-            totalExpense: acc.totalExpense,
-            count: acc.count + 1
-          ),
-        Expense(:var amount) => (
-            totalIncome: acc.totalIncome,
-            totalExpense: acc.totalExpense + amount,
-            count: acc.count + 1
-          ),
+      (finalPrice: 0.0, totalDiscount: 0.0),
+      (acc, item) {
+        // 아이템별 원가 계산
+        final originalTotal = item.price * item.count;
+        
+        // [요구사항 3] 패턴 매칭과 'when' 절을 사용하여 할인액(itemDiscount)을 계산하세요.
+        // 1. Percentage: 원가 * rate
+        // 2. Fixed: amount (단, 원가보다 클 수 없음)
+        // 3. Bundle: item.count가 minCount 이상일 때만 discountAmount 적용
+        // 4. null 혹은 미해당: 0.0
+        double itemDiscount = switch (item.discount) {
+          // TODO: 이곳에 패턴 매칭 로직을 작성하세요.
+          _______ => _______,
+          _______ => _______,
+          _______ => _______,
+          _ => 0.0,
+        };
+
+        return (
+          finalPrice: acc.finalPrice + (originalTotal - itemDiscount),
+          totalDiscount: acc.totalDiscount + itemDiscount,
+        );
       },
     );
   }
 }
 
 void main() {
-  final history = [
-    Income("월급", 5000000),
-    Expense("아이패드", 1200000, "전자기기"),
-    Expense("커피", 5000, "식비"),
-    Income("중고거래", 30000),
-    Expense("월세", 600000, "주거"),
+  final List<CartItem> cart = [
+    (name: "맥북", price: 2000000, count: 1, discount: Percentage(0.1)), // 10% 할인
+    (name: "마우스", price: 50000, count: 3, discount: Bundle(2, 10000)), // 2개 이상 구매 시 1만원 할인
+    (name: "키보드", price: 150000, count: 1, discount: Fixed(200000)),  // 20만원 할인(원가보다 크므로 예외처리 필요)
+    (name: "장패드", price: 20000, count: 1, discount: null),            // 할인 없음
   ];
 
-  // TODO 1: 확장 메서드를 호출하여 요약 데이터를 받으세요.
-  final summary = history.getSummary();
+  print("🛒 장바구니 결제 분석 중...");
 
-  print("📊 거래 요약:");
-  print("총 수입: ${summary.totalIncome}원");
-  print("총 지출: ${summary.totalExpense}원");
-  print("항목 수: ${summary.count}개");
+  // TODO: 확장 메서드를 호출하여 결과를 얻고 구조 분해를 통해 출력하세요.
+  final _______ = cart.calculateTotal();
 
-  print("\n⚠️ 고액 지출 알림 (10만원 초과):");
-  
-  // TODO 2: history를 순회하며 '패턴 매칭'을 사용해 
-  // 10만원 초과 Expense만 찾아 "항목: [설명], 금액: [금액]"을 출력하세요.
-  for (var tx in history) {
-    if (tx case Expense(description: var d, amount: var a) when a > 100000) {
-      print("항목: $d, 금액: $a원");
-    }
-  }
+  print("--------------------------------");
+  print("최종 결제 금액: ${finalPrice.toStringAsFixed(0)}원");
+  print("총 할인 금액: ${totalDiscount.toStringAsFixed(0)}원");
+  print("--------------------------------");
 }
