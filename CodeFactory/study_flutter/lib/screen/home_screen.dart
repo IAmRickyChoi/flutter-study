@@ -10,15 +10,55 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       body: SafeArea(
         child: Container(
-          color: Colors.black,
+          color: Colors.white,
+          height: double.infinity,
           child: Column(
-            children: colors.map(
-              (e) => Container(
-                height:50.0 ,
-                width: 50.0,
-                color:e)
-              ).toList(),
-                 ),
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  ...colors.map((e)=>Container(
+                    width: 50.0,
+                    height:50.0,
+                    color:e
+                    ))
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ...colors.where((e) => e == Colors.orange)
+                  .map((e)=>Container(
+                    width: 50.0,
+                    height:50.0,
+                    color:e
+                    ))
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  ...colors.map((e)=>Container(
+                    width: 50.0,
+                    height:50.0,
+                    color:e
+                    ))
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ...colors.where((e) => e == Colors.green)
+                  .map((e)=>Container(
+                    width: 50.0,
+                    height:50.0,
+                    color:e
+                    ))
+                ],
+              ),
+            ],
+          ),
         )
       )  
     );
