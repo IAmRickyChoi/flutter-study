@@ -5,7 +5,7 @@ void main(){
   WidgetsFlutterBinding.ensureInitialized();
   runApp(
     MaterialApp(
-      home: StateFul(),
+      home: HomeScreen(),
       ),
   );
 }
