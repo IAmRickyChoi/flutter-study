@@ -298,7 +298,7 @@ class _ConstChildWidgetState extends State<ConstChildWidget> {
   void initState() {
     super.initState();
     // Const라도 최초 1회는 실행
-    // print("  💎 [Const] 2. initState"); 
+    print("  💎 [Const] 2. initState"); 
   }
 
   @override
