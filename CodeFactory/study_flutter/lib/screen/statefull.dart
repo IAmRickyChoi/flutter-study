@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+class Statefull extends StatefulWidget {
+  const Statefull({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<Statefull> createState() => _StatefullState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _StatefullState extends State<Statefull> {
   bool show = true;
+  Color color = Colors.blue;
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +19,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            if (show) MyWidget(),
+            if (show) MyWidget(color: color),
             SizedBox(height: 32.0),
             ElevatedButton(
               onPressed: () {
@@ -35,11 +36,22 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-class MyWidget extends StatelessWidget {
-  const MyWidget({super.key});
+class MyWidget extends StatefulWidget {
+  final Color color;
+  const MyWidget({super.key,required this.color});
+
+  @override
+  State<MyWidget> createState() => _MyWidgetState();
+}
+
+class _MyWidgetState extends State<MyWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(height: 50.0, width: 50.0, color: Colors.blue);
+    return Container(
+      height: 50.0, 
+      width: 50.0, 
+      color: widget.color,
+      );
   }
 }
