@@ -65,8 +65,6 @@ class _Top extends StatelessWidget {
   final VoidCallback? onPressed;
   const _Top({required this.selectedDate, required this.onPressed, super.key});
 
-  ///이건 왜 빌드 안에서 정의못해?
-
   @override
   Widget build(BuildContext context) {
     final now = DateTime.now();
