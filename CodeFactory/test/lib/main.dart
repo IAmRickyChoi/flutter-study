@@ -1,35 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:test/screen/home_screen.dart';
+import 'package:test/screen/route_one_screen.dart';
+import 'package:test/screen/route_two_screen.dart';
+import 'package:test/screen/routh_three_screen.dart';
 
+
+///Imperative vs Declarative
 void main(){
   runApp(
-    MaterialApp(home: MyWidget())
+    MaterialApp(
+      initialRoute: '/',
+      routes:{
+        ///key - 라우트 이름
+        ///value - builder -> 이동하고싶은 라우트
+        '/':(BuildContext context) => HomeScreen(),
+        '/One':(BuildContext context) => RouteOneScreen(number: 9999),
+        '/Two':(BuildContext context) => RouteTwoScreen(),
+        '/Three':(BuildContext context) => RouteThreeScreen(),
+      }
+    )
   );
-}
-
-
-
-
-class MyWidget extends StatelessWidget {
-  const MyWidget({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Container(
-          height:200,
-          width: 200,
-          color: Colors.red,
-          child : Align(
-            alignment: Alignment(0,-0.5),
-            child: Container(
-              height: 50,
-              width: 50,
-              color: Colors.blue,
-            ),
-          )
-        ),
-      ),
-    );
-  }
 }
