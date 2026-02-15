@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:video_player/video_player.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -9,17 +12,21 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  bool showVideoPlayer = false;
+  XFile? video;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: showVideoPlayer ? _VideoPlayer() : _VideoSelector(onLogoTap: onLogoTap,));
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: video!=null ? _VideoPlayer(video: video!,) : _VideoSelector(onLogoTap: onLogoTap,));
   }
 
   onLogoTap() async{
     final video = await ImagePicker().pickVideo(source: ImageSource.gallery);
 
-    print(video);
+    setState(() {
+      this.video = video;
+    });
   }
 }
 
@@ -83,11 +90,87 @@ class _Title extends StatelessWidget {
   }
 }
 
-class _VideoPlayer extends StatelessWidget {
-  const _VideoPlayer({super.key});
+class _VideoPlayer extends StatefulWidget {
+  final XFile video;
+  const _VideoPlayer({super.key,required this.video});
+
+  @override
+  State<_VideoPlayer> createState() => _VideoPlayerState();
+}
+
+class _VideoPlayerState extends State<_VideoPlayer> {
+  late final VideoPlayerController videoPlayerController;
+
+  @override
+  void initState() {
+    super.initState();
+
+    initializeController();
+  }
+
+  initializeController()async{
+    videoPlayerController = VideoPlayerController.file(
+      File(widget.video.path)
+    );
+
+    await videoPlayerController.initialize();
+
+    setState(() {
+      
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Center(child: Text('Video Player'));
+    return Center(
+      child: AspectRatio(
+        aspectRatio: videoPlayerController.value.aspectRatio,
+        child: Stack(
+          children:[ 
+            VideoPlayer(videoPlayerController),
+            Align(
+              alignment: Alignment.center,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  IconButton(onPressed: (){}, color:Colors.white,icon: Icon(Icons.rotate_left)),
+                  IconButton(
+                    onPressed: (){
+                      if(videoPlayerController.value.isPlaying){
+                        videoPlayerController.pause();
+                      }else{
+                        videoPlayerController.play();
+                      }
+                      setState(() {
+                        
+                      });
+                    }, 
+                    color:Colors.white,
+                    icon: Icon(
+                        videoPlayerController.value.isPlaying 
+                        ? Icons.pause:
+                        Icons.play_arrow,
+                      ),
+                    ),
+                  IconButton(onPressed: (){}, color:Colors.white,icon: Icon(Icons.rotate_right)),
+                ],
+              ),
+            ),
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: Slider(
+                value: 0, 
+                onChanged: (double val){}),
+            ),
+            Positioned(
+              right:0,
+              child: IconButton(onPressed: (){}, color:Colors.white,icon: Icon(Icons.photo_camera_back))),
+
+            ]
+        )
+      )
+    );
   }
 }
