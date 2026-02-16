@@ -1,16 +1,19 @@
 # study_flutter
 
-A new Flutter project.
+A Flutter project for studying various Flutter features, including image carousels and WebViews.
 
-## Getting Started
+## Packages Used
 
-This project is a starting point for a Flutter application.
+*   **flutter**: The core framework for building Flutter applications.
+*   **cupertino_icons**: Provides iOS-style icons.
+*   **webview_flutter**: A Flutter plugin for adding a WebView.
 
-A few resources to get you started if this is your first Flutter project:
+## Package Component Usage
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### `webview_flutter`
+*   **WebViewWidget (widget)**: Renders the web content.
+    *   **Properties Used:** `controller`.
+*   **WebViewController**: Manages the WebView.
+    *   **Methods Used:**
+        *   `setJavaScriptMode()`: Sets the JavaScript mode, configured to `JavaScriptMode.unrestricted`.
+        *   `loadRequest()`: Loads a specific URL.

@@ -1,16 +1,20 @@
 # date_time_app
 
-A new Flutter project.
+A simple Flutter application that shows the number of days since a certain date.
 
-## Getting Started
+## Packages Used
 
-This project is a starting point for a Flutter application.
+*   **flutter**: The core framework for building Flutter applications.
+*   **cupertino_icons**: Provides iOS-style icons.
 
-A few resources to get you started if this is your first Flutter project:
+## Package Component Usage
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+### `package:flutter/cupertino.dart`
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+*   **CupertinoDatePicker**: A widget for selecting dates and times.
+    *   **Properties Used:**
+        *   `maximumDate`: The maximum selectable date.
+        *   `initialDateTime`: The initially selected date.
+        *   `mode`: The picker mode, set to `CupertinoDatePickerMode.date`.
+        *   `onDateTimeChanged`: A callback that is called when the selected date or time changes.
+        *   `dateOrder`: The order of the date fields, set to `DatePickerDateOrder.ymd`.
