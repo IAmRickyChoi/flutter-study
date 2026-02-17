@@ -44,6 +44,4 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
-# Google Maps API Key
-ios/Runner/ApiKey.swift
-android/app/src/main/res/values/secrets.xml
+ios/Flutter/ApiKey.xcconfig
