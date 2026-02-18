@@ -1,8 +1,6 @@
-import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:video_player/video_player.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -12,80 +10,35 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  bool _videoSelected = false;
-  late VideoPlayerController controller;
-  XFile? _video;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('復習'),
-        actions: [
-          IconButton(
-            onPressed: (){
-              setState(() {
-              _videoSelected = false;
-              _video = null;
-              });
-            }, 
-            icon: Icon(Icons.home)
-          )
-        ],
-      ),
-      body: _videoSelected ? _VideoPlayer(controller: controller,) : _SelectVideo(selectVideo: _selectVideo),
-    );
-  }
-
-  _selectVideo()async{
-    var video = await ImagePicker().pickVideo(source: ImageSource.gallery);
-    controller = VideoPlayerController.file(File(video!.path));
-
-
-    controller.initialize();
-    controller.addListener(() {
-      setState(() {
-        _video = video;
-        _videoSelected = true;
-      });
-    },);
-  }
-}
-
-class _SelectVideo extends StatelessWidget {
-  final VoidCallback selectVideo;
-  const _SelectVideo({super.key,required this.selectVideo});
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: OutlinedButton(
-        onPressed: selectVideo, 
-        child: Text('Select Video'),
-        
-
+      body: FutureBuilder<int>(
+        future: getNumber(), 
+        builder: (BuildContext context,AsyncSnapshot<int> snapshot){
+          ///error
+          if(snapshot.hasError){
+            //final error = snapshot.error
+          }
+          if(snapshot.hasData){
+            final data=snapshot.data;
+            return Center(
+              child: Text(data.toString()),
+            );
+          }
+          return Center(
+            child: Text("no text"),
+          );
+        },
       ),
     );
   }
-}
 
-class _VideoPlayer extends StatelessWidget {
-  final VideoPlayerController controller;
-  const _VideoPlayer({super.key,required this.controller});
+  Future<int> getNumber()async{
+    await Future.delayed(Duration(seconds: 2));
+    final random = Random();
 
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: AspectRatio(
-        aspectRatio: controller.value.aspectRatio,
-        child: Stack(
-          children: [
-            VideoPlayer(
-              controller
-            ),
-            Align(alignment:Alignment.center,child:  IconButton(onPressed: (){controller.play();}, icon:Icon(Icons.play_arrow,color: Colors.white,), ))
-          ]
-        ),
-      ),
-    );
+    return random.nextInt(100);
   }
+
 }
