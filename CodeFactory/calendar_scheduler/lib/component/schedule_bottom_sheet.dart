@@ -1,14 +1,14 @@
 import 'package:calendar_scheduler/component/custom_text_field.dart';
 import 'package:calendar_scheduler/const/color.dart';
 import 'package:calendar_scheduler/database/drift.dart';
-import 'package:calendar_scheduler/model/schedule.dart';
 import 'package:drift/drift.dart' hide Column;
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
 class ScheduleBottomSheet extends StatefulWidget {
+  final int? id;
   final DateTime selectedDay;
-  const ScheduleBottomSheet({super.key, required this.selectedDay});
+  const ScheduleBottomSheet({super.key, required this.selectedDay, this.id});
 
   @override
   State<ScheduleBottomSheet> createState() => _ScheduleBottomSheetState();
@@ -21,46 +21,95 @@ class _ScheduleBottomSheetState extends State<ScheduleBottomSheet> {
   int? endTime;
   String? content;
 
-  String selectedColor = categoryColors.first;
+  int? selectedColorId;
+
+  @override
+  void initState() {
+    super.initState();
+    initCategory();
+  }
+
+  initCategory() async {
+    if (widget.id != null) {
+      final resp = await GetIt.I<AppDatabase>().getScheduleById(widget.id!);
+
+      setState(() {
+        selectedColorId = resp.category.id;
+      });
+    } else {
+      final resp = await GetIt.I<AppDatabase>().getCategories();
+
+      setState(() {
+        selectedColorId = resp.first.id;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.white,
-      height: 600.0,
-      child: SafeArea(
-        child: Padding(
-          padding: EdgeInsetsGeometry.only(left: 16.0, right: 16.0, top: 16.0),
-          child: Form(
-            key: formKey,
-            child: Column(
-              children: [
-                _Time(
-                  onEndSaved: onEndTimeSaved,
-                  onEndValidate: onEndTimeValidate,
-                  onStartSaved: onStartTimeSaved,
-                  onStartValidate: onStartTimeValidate,
+    if (selectedColorId == null) {
+      return Container();
+    }
+
+    return FutureBuilder(
+      future: widget.id == null
+          ? null
+          : GetIt.I<AppDatabase>().getScheduleById(widget.id!),
+      builder: (context, snapshot) {
+        if (widget.id != null &&
+            snapshot.connectionState == ConnectionState.waiting &&
+            !snapshot.hasData) {
+          return Center(child: CircularProgressIndicator());
+        }
+
+        final data = snapshot.data?.schedule;
+
+        return Container(
+          color: Colors.white,
+          height: 600.0,
+          child: SafeArea(
+            child: Padding(
+              padding: EdgeInsetsGeometry.only(
+                left: 16.0,
+                right: 16.0,
+                top: 16.0,
+              ),
+              child: Form(
+                key: formKey,
+                child: Column(
+                  children: [
+                    _Time(
+                      onEndSaved: onEndTimeSaved,
+                      onEndValidate: onEndTimeValidate,
+                      onStartSaved: onStartTimeSaved,
+                      onStartValidate: onStartTimeValidate,
+                      startTimeinitValue: data?.startTime.toString(),
+                      endTimeinitValue: data?.endTime.toString(),
+                    ),
+                    SizedBox(height: 8.0),
+                    _Content(
+                      onSaved: onContentSaved,
+                      onValidate: onContentValidate,
+                      initialValue: data?.content,
+                    ),
+                    SizedBox(height: 8.0),
+                    _Categories(
+                      selectedColor: selectedColorId!,
+                      onTap: (int color) {
+                        setState(() {
+                          selectedColorId = color;
+                        });
+                      },
+                    ),
+                    SizedBox(height: 8.0),
+                    _SaveButton(onPressed: onSavedPressed),
+                  ],
                 ),
-                SizedBox(height: 8.0),
-                _Content(
-                  onSaved: onContentSaved,
-                  onValidate: onContentValidate,
-                ),
-                SizedBox(height: 8.0),
-                _Categories(
-                  selectedColor: selectedColor,
-                  onTap: (String color) {
-                    setState(() {
-                      selectedColor = color;
-                    });
-                  },
-                ),
-                SizedBox(height: 8.0),
-                _SaveButton(onPressed: onSavedPressed),
-              ],
+              ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
@@ -117,15 +166,28 @@ class _ScheduleBottomSheetState extends State<ScheduleBottomSheet> {
 
       final database = GetIt.I<AppDatabase>();
 
-      await database.createSchedule(
-        ScheduleTableCompanion(
-          startTime: Value(startTime!),
-          endTime: Value(endTime!),
-          content: Value(content!),
-          color: Value(selectedColor),
-          date: Value(widget.selectedDay),
-        ),
-      );
+      if (widget.id == null) {
+        await database.createSchedule(
+          ScheduleTableCompanion(
+            startTime: Value(startTime!),
+            endTime: Value(endTime!),
+            content: Value(content!),
+            colorId: Value(selectedColorId!),
+            date: Value(widget.selectedDay),
+          ),
+        );
+      } else {
+        await database.updateScheduleById(
+          widget.id!,
+          ScheduleTableCompanion(
+            startTime: Value(startTime!),
+            endTime: Value(endTime!),
+            content: Value(content!),
+            colorId: Value(selectedColorId!),
+            date: Value(widget.selectedDay),
+          ),
+        );
+      }
 
       Navigator.of(context).pop();
     }
@@ -137,11 +199,15 @@ class _Time extends StatelessWidget {
   final FormFieldSetter<String> onEndSaved;
   final FormFieldValidator<String> onStartValidate;
   final FormFieldValidator<String> onEndValidate;
+  final String? startTimeinitValue;
+  final String? endTimeinitValue;
   _Time({
     required this.onStartSaved,
     required this.onEndSaved,
     required this.onStartValidate,
     required this.onEndValidate,
+    required this.startTimeinitValue,
+    required this.endTimeinitValue,
     super.key,
   });
 
@@ -154,6 +220,7 @@ class _Time extends StatelessWidget {
             label: '시작 시간',
             onSaved: onStartSaved,
             validator: onStartValidate,
+            initialValue: startTimeinitValue,
           ),
         ),
         SizedBox(width: 16.0),
@@ -162,6 +229,7 @@ class _Time extends StatelessWidget {
             label: '마감 시간',
             onSaved: onEndSaved,
             validator: onEndValidate,
+            initialValue: endTimeinitValue,
           ),
         ),
       ],
@@ -172,8 +240,14 @@ class _Time extends StatelessWidget {
 class _Content extends StatelessWidget {
   final FormFieldSetter<String> onSaved;
   final FormFieldValidator<String> onValidate;
+  final String? initialValue;
 
-  const _Content({super.key, required this.onSaved, required this.onValidate});
+  const _Content({
+    super.key,
+    required this.onSaved,
+    required this.onValidate,
+    required this.initialValue,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -183,16 +257,17 @@ class _Content extends StatelessWidget {
         expand: true,
         onSaved: onSaved,
         validator: onValidate,
+        initialValue: initialValue,
       ),
     );
   }
 }
 
-typedef OnColorSelected = void Function(String color);
+typedef OnColorSelected = void Function(int color);
 
 class _Categories extends StatelessWidget {
   final OnColorSelected onTap;
-  final String selectedColor;
+  final int selectedColor;
   const _Categories({
     super.key,
     required this.selectedColor,
@@ -201,30 +276,38 @@ class _Categories extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: categoryColors
-          .map(
-            (e) => Padding(
-              padding: EdgeInsets.only(right: 8.0),
-              child: GestureDetector(
-                onTap: () {
-                  onTap(e);
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Color(int.parse('FF$e', radix: 16)),
-                    shape: BoxShape.circle,
-                    border: e == selectedColor
-                        ? Border.all(color: Colors.black, width: 4.0)
-                        : null,
+    return FutureBuilder(
+      future: GetIt.I<AppDatabase>().getCategories(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return Container();
+        }
+        return Row(
+          children: snapshot.data!
+              .map(
+                (e) => Padding(
+                  padding: EdgeInsets.only(right: 8.0),
+                  child: GestureDetector(
+                    onTap: () {
+                      onTap(e.id);
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Color(int.parse('FF${e.color}', radix: 16)),
+                        shape: BoxShape.circle,
+                        border: e.id == selectedColor
+                            ? Border.all(color: Colors.black, width: 4.0)
+                            : null,
+                      ),
+                      width: 32.0,
+                      height: 32.0,
+                    ),
                   ),
-                  width: 32.0,
-                  height: 32.0,
                 ),
-              ),
-            ),
-          )
-          .toList(),
+              )
+              .toList(),
+        );
+      },
     );
   }
 }

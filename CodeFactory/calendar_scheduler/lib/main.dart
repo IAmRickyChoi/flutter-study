@@ -15,6 +15,16 @@ void main() async {
 
   GetIt.I.registerSingleton<AppDatabase>(database);
 
+  final colors = await database.getCategories();
+
+  if (colors.isEmpty) {
+    for (String hexCode in categoryColors) {
+      await database.createCategory(
+        CategoryTableCompanion(color: Value(hexCode)),
+      );
+    }
+  }
+
   runApp(
     MaterialApp(
       theme: ThemeData(fontFamily: 'NotoSans'),

@@ -1,14 +1,13 @@
 import 'package:calendar_scheduler/component/calendar.dart';
 import 'package:calendar_scheduler/component/schedule_bottom_sheet.dart';
 import 'package:calendar_scheduler/const/color.dart';
-import 'package:calendar_scheduler/component/custom_text_field.dart';
 import 'package:calendar_scheduler/component/schedule_card.dart';
 import 'package:calendar_scheduler/component/today_banner.dart';
 import 'package:calendar_scheduler/database/drift.dart';
 import 'package:calendar_scheduler/model/schedule.dart';
+import 'package:calendar_scheduler/model/schedule_with_category.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:table_calendar/table_calendar.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -58,8 +57,6 @@ class _HomeScreenState extends State<HomeScreen> {
               return ScheduleBottomSheet(selectedDay: selectedDay);
             },
           );
-
-          setState(() {});
         },
         backgroundColor: primaryColor,
         child: Icon(Icons.add, color: Colors.white),
@@ -72,21 +69,29 @@ class _HomeScreenState extends State<HomeScreen> {
               onDaySelected: onDaySelected,
               selectedDayPredicate: selectedDayPredicate,
             ),
-            TodayBanner(selectedDay: selectedDay, taskCount: 0),
+            StreamBuilder(
+              stream: GetIt.I<AppDatabase>().streamSchedules(selectedDay),
+              builder: (context, snapshot) {
+                return TodayBanner(
+                  selectedDay: selectedDay,
+                  taskCount: !snapshot.hasData ? 0 : snapshot.data!.length,
+                );
+              },
+            ),
             Expanded(
               child: Padding(
                 padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0),
-                child: FutureBuilder<List<ScheduleTableData>>(
-                  future: GetIt.I<AppDatabase>().getSchedules(selectedDay),
+                child: StreamBuilder<List<ScheduleWithCategory>>(
+                  stream: GetIt.I<AppDatabase>().streamSchedules(selectedDay),
                   builder: (context, snapshot) {
                     if (snapshot.hasError) {
                       return Center(child: Text('has error'));
                     }
 
-                    if (!snapshot.hasData &&
-                        snapshot.connectionState == ConnectionState.waiting) {
+                    if (snapshot.data == null) {
                       return Center(child: CircularProgressIndicator());
                     }
+
                     final schedules = snapshot.data!;
 
                     return ListView.separated(
@@ -94,24 +99,42 @@ class _HomeScreenState extends State<HomeScreen> {
                       itemBuilder: (BuildContext context, int index) {
                         // final selectedSchedules = schedule[selectedDay]!;
                         // final scheduleModel = selectedSchedules[index];
-                        final schedule = schedules[index];
+                        final scheduleWithCategory = schedules[index];
+                        final schedule = scheduleWithCategory.schedule;
+                        final category = scheduleWithCategory.category;
 
                         return Dismissible(
                           key: ObjectKey(schedule.id),
                           direction: DismissDirection.endToStart,
-                          confirmDismiss: (DismissDirection direction) async {
-                            await GetIt.I<AppDatabase>().removeSchedule(
-                              schedule.id,
-                            );
-                            setState(() {});
-                            return true;
+                          // confirmDismiss: (DismissDirection direction) async {
+                          //   await GetIt.I<AppDatabase>().removeSchedule(
+                          //     schedule.id,
+                          //   );
+
+                          //   return true;
+                          // },
+                          onDismissed: (DismissDirection direction) {
+                            GetIt.I<AppDatabase>().removeSchedule(schedule.id);
                           },
-                          child: ScheduleCard(
-                            startTime: schedule.startTime,
-                            endTime: schedule.endTime,
-                            content: schedule.content,
-                            color: Color(
-                              int.parse('FF${schedule.color}', radix: 16),
+                          child: GestureDetector(
+                            onTap: () async {
+                              await showModalBottomSheet<ScheduleTable>(
+                                context: context,
+                                builder: (_) {
+                                  return ScheduleBottomSheet(
+                                    selectedDay: selectedDay,
+                                    id: schedule.id,
+                                  );
+                                },
+                              );
+                            },
+                            child: ScheduleCard(
+                              startTime: schedule.startTime,
+                              endTime: schedule.endTime,
+                              content: schedule.content,
+                              color: Color(
+                                int.parse('FF${category.color}', radix: 16),
+                              ),
                             ),
                           ),
                         );
@@ -137,9 +160,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   bool selectedDayPredicate(day) {
-    if (selectedDay == null) {
-      return false;
-    }
     return day.isAtSameMomentAs(selectedDay!);
   }
 }
