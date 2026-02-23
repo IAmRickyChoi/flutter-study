@@ -10,25 +10,35 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final _myBox = Hive.box('My_Box');
+  final TextEditingController _textController = TextEditingController();
 
-  _putData() {
-    _myBox.put(1, 'test2');
-  }
+  List todos = [];
 
-  _readData() {
-    print(_myBox.get(1));
-  }
-
-  _deleteData() {
-    _myBox.delete(1);
+  @override
+  void initState() {
+    super.initState();
+    todos = _myBox.get('My_List') ?? [];
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: ListView.builder(
+        itemCount: todos.length,
         itemBuilder: (context, index) {
-          return;
+          final todo = todos[index];
+          return ListTile(
+            title: Text(todo),
+            trailing: IconButton(
+              onPressed: () {
+                setState(() {
+                  todos.removeAt(index);
+                });
+                _myBox.put('My_Box', todos);
+              },
+              icon: Icon(Icons.delete),
+            ),
+          );
         },
       ),
       bottomSheet: Padding(
@@ -43,25 +53,36 @@ class _HomeScreenState extends State<HomeScreen> {
                   builder: (context) {
                     return AlertDialog(
                       title: Text('add'),
-                      content: AboutListTile(),
+                      content: TextFormField(controller: _textController),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                            _textController.clear();
+                          },
+                          child: Text('cancel'),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            setState(() {
+                              todos.add(_textController.text);
+                            });
+                            _myBox.put('My_List', todos);
+                            Navigator.of(context).pop();
+                            _textController.clear();
+                          },
+                          child: Text('add'),
+                        ),
+                      ],
                     );
                   },
                 );
+                print(_textController);
               },
               child: Text('put'),
             ),
-            OutlinedButton(
-              onPressed: () {
-                _readData();
-              },
-              child: Text('read'),
-            ),
-            OutlinedButton(
-              onPressed: () {
-                _deleteData();
-              },
-              child: Text('delete'),
-            ),
+            OutlinedButton(onPressed: () {}, child: Text('read')),
+            OutlinedButton(onPressed: () {}, child: Text('delete')),
           ],
         ),
       ),
