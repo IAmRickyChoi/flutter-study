@@ -20,8 +20,15 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     users = _myBox.values.toList();
-
     print(users);
+  }
+
+  // 💡 [개선 2] 컨트롤러 메모리 해제
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _ageController.dispose();
+    super.dispose();
   }
 
   @override
@@ -49,17 +56,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     itemCount: streamUsers.length,
                     itemBuilder: (context, index) {
                       final user = streamUsers[index];
-                      final name = user.name;
-                      final age = user.age;
-                      // final createdAt = user.createdAt; (현재 Text 위젯에서 사용하지 않아 생략가능)
-
                       return ListTile(
                         tileColor: Colors.yellow[200],
-                        title: Text('name : $name , age : $age'),
+                        title: Text('name : ${user.name} , age : ${user.age}'),
                         trailing: IconButton(
                           onPressed: () {
-                            // 스트림이 자동으로 감지하므로 삭제만 하면 됩니다.
-                            _myBox.deleteAt(index);
+                            // 💡 [개선 3] 인덱스 대신 해당 데이터의 고유 Key를 가져와서 안전하게 삭제
+                            final key = _myBox.keyAt(index);
+                            _myBox.delete(key);
                           },
                           icon: Icon(Icons.delete, color: Colors.blue[300]),
                         ),
@@ -78,15 +82,15 @@ class _HomeScreenState extends State<HomeScreen> {
               child: ListView.builder(
                 itemCount: users.length,
                 itemBuilder: (context, index) {
-                  final name = users[index].name;
-                  final age = users[index].age;
-
+                  final user = users[index];
                   return ListTile(
                     tileColor: Colors.yellow,
-                    title: Text('name : $name , age : $age '),
+                    title: Text('name : ${user.name} , age : ${user.age}'),
                     trailing: IconButton(
                       onPressed: () {
-                        _myBox.deleteAt(index);
+                        // 💡 [개선 3] 안전한 삭제 방식 적용
+                        final key = _myBox.keyAt(index);
+                        _myBox.delete(key);
                         setState(() {
                           users = _myBox.values.toList();
                         });
@@ -97,7 +101,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 },
               ),
             ),
-            // 하단 여백 추가 (BottomSheet가 리스트를 가리지 않도록)
             SizedBox(height: 60),
           ],
         ),
@@ -113,7 +116,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 backgroundColor: Colors.yellow,
                 foregroundColor: Colors.black,
               ),
-              onPressed: onPressedWithoutStream,
+              // 하나의 다이얼로그 함수에 isStream 값만 다르게 넘겨줍니다.
+              onPressed: () => _showAddDialog(isStream: false),
               child: Text('no stream'),
             ),
             TextButton(
@@ -121,9 +125,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 backgroundColor: Colors.yellow,
                 foregroundColor: Colors.black,
               ),
-              // 🚨 [수정 1] 기존 코드에서는 두 버튼 모두 onPressedWithoutStream을 호출하고 있었습니다.
-              // 올바른 함수(onPressedWithStream)로 변경했습니다.
-              onPressed: onPressedWithStream,
+              onPressed: () => _showAddDialog(isStream: true),
               child: Text('with stream'),
             ),
           ],
@@ -132,7 +134,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // 🚨 [수정 2] 데이터를 추가할 때 '수동 갱신(setState)'이 필요한지 여부를 알 수 있도록 매개변수(isStream)를 추가했습니다.
   void addUser({required bool isStream}) {
     _myBox.add(
       User(
@@ -141,7 +142,6 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
 
-    // 스트림을 사용하지 않는 모드일 때는 데이터를 추가한 뒤 setState를 호출해 아래쪽 리스트를 수동으로 갱신해 주어야 합니다.
     if (!isStream) {
       setState(() {
         users = _myBox.values.toList();
@@ -149,51 +149,8 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  void onPressedWithStream() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextFormField(
-                controller: _nameController,
-                decoration: InputDecoration(labelText: '이름'),
-              ),
-              TextFormField(
-                controller: _ageController,
-                decoration: InputDecoration(labelText: '나이'),
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                _nameController.clear();
-                _ageController.clear();
-                Navigator.of(context).pop();
-              },
-              child: Text('cancel'),
-            ),
-            // 🚨 [수정 3] 기존 코드에서는 onPressedWithStream 함수를 다시 호출하는 치명적인 버그(무한 팝업)가 있었습니다.
-            // addUser를 호출하고 창을 닫도록 수정했습니다.
-            TextButton(
-              onPressed: () {
-                addUser(isStream: true); // 스트림 모드이므로 setState 생략
-                Navigator.of(context).pop();
-                _nameController.clear();
-                _ageController.clear();
-              },
-              child: Text('with stream add'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void onPressedWithoutStream() {
+  // 💡 [개선 1] 두 개로 나뉘어 있던 다이얼로그 함수를 하나로 깔끔하게 통합!
+  void _showAddDialog({required bool isStream}) {
     showDialog(
       context: context,
       builder: (context) {
@@ -222,13 +179,13 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             TextButton(
               onPressed: () {
-                // 🚨 [수정 4] 여기서 addUser를 호출할 때 false를 전달하여 내부적으로 setState가 실행되도록 합니다.
-                addUser(isStream: false);
+                addUser(isStream: isStream);
                 Navigator.of(context).pop();
                 _nameController.clear();
                 _ageController.clear();
               },
-              child: Text('no stream add'),
+              // isStream 여부에 따라 버튼 텍스트도 다르게 보여줍니다.
+              child: Text(isStream ? 'with stream add' : 'no stream add'),
             ),
           ],
         );
