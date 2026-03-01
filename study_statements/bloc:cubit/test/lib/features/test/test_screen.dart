@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:test/features/test/test_bloc.dart';
 import 'package:test/features/test/test_event.dart';
+import 'package:test/features/test/test_state.dart';
 
 class TestScreen extends StatelessWidget {
   const TestScreen({super.key});
@@ -29,9 +30,9 @@ class _Screen extends StatelessWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        BlocBuilder<TestBloc, int>(
+        BlocBuilder<TestBloc, TestState>(
           builder: (context, state) {
-            return Text(state.toString());
+            return Text(state.value.toString());
           },
         ),
         OutlinedButton(
@@ -39,6 +40,12 @@ class _Screen extends StatelessWidget {
             context.read<TestBloc>().add(Increment());
           },
           child: Icon(Icons.add),
+        ),
+        OutlinedButton(
+          onPressed: () {
+            context.read<TestBloc>().add(decrement());
+          },
+          child: Icon(Icons.delete),
         ),
       ],
     );
