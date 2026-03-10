@@ -66,3 +66,6 @@ ios/Podfile.lock
 # Mac & Windows
 .DS_Store
 Thumbs.db
+
+
+test_anything
