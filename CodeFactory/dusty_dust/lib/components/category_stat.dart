@@ -29,7 +29,14 @@ class CategoryStat extends StatelessWidget {
                   ),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(vertical: 4.0),
-                    child: Text('종류별 통계', textAlign: TextAlign.center),
+                    child: Text(
+                      '종류별 통계',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
                   ),
                 ),
                 Expanded(
