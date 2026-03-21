@@ -6,8 +6,15 @@ import 'package:get_it/get_it.dart';
 import 'package:isar_community/isar.dart';
 
 class CategoryStat extends StatelessWidget {
+  final Color darkColor;
+  final Color lightColor;
   final Region region;
-  const CategoryStat({super.key, required this.region});
+  const CategoryStat({
+    super.key,
+    required this.darkColor,
+    required this.lightColor,
+    required this.region,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +72,7 @@ class CategoryStat extends StatelessWidget {
                               .sortByDateTimeDesc()
                               .findFirst(),
                           builder: (context, snapshot) {
-                            if (!snapshot.hasError) {
+                            if (snapshot.hasError) {
                               return Center(
                                 child: Text(snapshot.error.toString()),
                               );

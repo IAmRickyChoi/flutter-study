@@ -72,17 +72,17 @@ enum ItemCode {
   String get krName {
     switch (this) {
       case ItemCode.SO2:
-        return "이황산가스";
+        return "아황산가스"; // 또는 이산화황
       case ItemCode.CO:
-        return "이황산가스";
+        return "일산화탄소";
       case ItemCode.O3:
-        return "이황산가스";
+        return "오존";
       case ItemCode.NO2:
-        return "이황산가스";
+        return "이산화질소";
       case ItemCode.PM10:
-        return "이황산가스";
+        return "미세먼지";
       case ItemCode.PM25:
-        return "이황산가스";
+        return "초미세먼지";
     }
   }
 }

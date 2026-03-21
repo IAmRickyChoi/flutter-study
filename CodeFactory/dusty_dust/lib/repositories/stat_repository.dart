@@ -86,16 +86,6 @@ class StatRepository {
         await isar.writeTxn(() async {
           return await isar.statModels.put(statModel);
         });
-        // stats = [
-        //   ...stats,
-
-        //   StatModel(
-        //     region: Region.values.firstWhere((e) => e.name == regionStr),
-        //     stat: double.parse(stat),
-        //     dateTime: DateTime.parse(dateTime),
-        //     itemCode: itemCode,
-        //   ),
-        // ];
       }
     }
     return stats;
