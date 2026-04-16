@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:home_page/constants/colors.dart';
 import 'package:home_page/constants/nav_items.dart';
+import 'package:home_page/constants/size.dart';
+import 'package:home_page/styles/style.dart';
+import 'package:home_page/widgets/drawer_mobile.dart';
+import 'package:home_page/widgets/header_desktop.dart';
+import 'package:home_page/widgets/header_mobile.dart';
+import 'package:home_page/widgets/site_logo.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -10,74 +16,48 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: CustomColor.scaffoldBg,
-      body: ListView(
-        scrollDirection: Axis.vertical,
-        children: [
-          //Main
-          Container(
-            height: 60,
-            margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-            width: double.maxFinite,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Colors.transparent, CustomColor.bgLight1],
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return Scaffold(
+          key: scaffoldKey,
+          backgroundColor: CustomColor.scaffoldBg,
+          endDrawer: constraints.maxWidth >= kMinDesktopWidth
+              ? null
+              : const DrawerMobile(),
+          body: ListView(
+            scrollDirection: Axis.vertical,
+            children: [
+              //Main
+              if (constraints.maxWidth >= kMinDesktopWidth)
+                const HeaderDesktop()
+              else
+                HeaderMobile(
+                  onLogoTap: () {},
+                  onMenuTap: scaffoldKey.currentState?.openEndDrawer,
+                ),
+              //Skills
+              Container(
+                height: 500,
+                width: double.maxFinite,
+                color: Colors.blueGrey,
               ),
-              borderRadius: BorderRadius.circular(100),
-            ),
-            child: Row(
-              children: [
-                Text(
-                  'CYH',
-                  style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                    decoration: TextDecoration.underline,
-                    color: CustomColor.yellowSecondary,
-                  ),
-                ),
-                Spacer(),
-                ...List.generate(
-                  navTitles.length,
-                  (e) => Padding(
-                    padding: const EdgeInsets.only(right: 20),
-                    child: TextButton(
-                      onPressed: () {},
-                      child: Text(
-                        navTitles[e],
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                          color: CustomColor.whitePrimary,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+              //Projects
+              Container(height: 500, width: double.maxFinite),
+              //Contact
+              Container(
+                height: 500,
+                width: double.maxFinite,
+                color: Colors.blueGrey,
+              ),
+              //Footer
+              Container(height: 500, width: double.maxFinite),
+            ],
           ),
-          //Skills
-          Container(
-            height: 500,
-            width: double.maxFinite,
-            color: Colors.blueGrey,
-          ),
-          //Projects
-          Container(height: 500, width: double.maxFinite),
-          //Contact
-          Container(
-            height: 500,
-            width: double.maxFinite,
-            color: Colors.blueGrey,
-          ),
-          //Footer
-          Container(height: 500, width: double.maxFinite),
-        ],
-      ),
+        );
+      },
     );
   }
 }
