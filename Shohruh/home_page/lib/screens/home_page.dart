@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:home_page/constants/colors.dart';
-import 'package:home_page/constants/nav_items.dart';
 import 'package:home_page/constants/size.dart';
-import 'package:home_page/styles/style.dart';
 import 'package:home_page/widgets/drawer_mobile.dart';
 import 'package:home_page/widgets/header_desktop.dart';
 import 'package:home_page/widgets/header_mobile.dart';
-import 'package:home_page/widgets/site_logo.dart';
+import 'package:home_page/widgets/main_desktop.dart';
+import 'package:home_page/widgets/main_mobile.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -31,13 +30,19 @@ class _HomePageState extends State<HomePage> {
             scrollDirection: Axis.vertical,
             children: [
               //Main
-              if (constraints.maxWidth >= kMinDesktopWidth)
-                const HeaderDesktop()
-              else
+              if (constraints.maxWidth >= kMinDesktopWidth) ...[
+                const HeaderDesktop(),
+                const MainDesktop(),
+              ] else ...[
                 HeaderMobile(
                   onLogoTap: () {},
-                  onMenuTap: scaffoldKey.currentState?.openEndDrawer,
+                  onMenuTap: () {
+                    scaffoldKey.currentState?.openEndDrawer();
+                  },
                 ),
+                const MainMobile(),
+              ],
+
               //Skills
               Container(
                 height: 500,
