@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:home_page/constants/colors.dart';
 import 'package:home_page/constants/size.dart';
 import 'package:home_page/constants/skill_items.dart';
@@ -9,6 +9,7 @@ import 'package:home_page/widgets/header_mobile.dart';
 import 'package:home_page/widgets/main_desktop.dart';
 import 'package:home_page/widgets/main_mobile.dart';
 import 'package:home_page/widgets/skills_desktop.dart';
+import 'package:home_page/widgets/skills_mobile.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -70,7 +71,10 @@ class _HomePageState extends State<HomePage> {
                     const SizedBox(height: 50.0),
 
                     //PlatForms and Skills
-                    const SkillsDesktop(),
+                    if (constraints.maxWidth >= kMedDesktopWidth)
+                      const SkillsDesktop()
+                    else
+                      const SkillsMobile(),
                   ],
                 ),
               ),
