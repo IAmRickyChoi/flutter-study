@@ -11,7 +11,7 @@ class MainDesktop extends StatelessWidget {
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20.0),
-      height: screenSize.height / 1.2,
+      height: screenSize.height / 1.5,
       constraints: BoxConstraints(minHeight: 350),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,

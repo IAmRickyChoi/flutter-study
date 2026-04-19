@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:home_page/constants/colors.dart';
 import 'package:home_page/constants/size.dart';
+import 'package:home_page/constants/skill_items.dart';
 import 'package:home_page/widgets/drawer_mobile.dart';
 import 'package:home_page/widgets/header_desktop.dart';
 import 'package:home_page/widgets/header_mobile.dart';
 import 'package:home_page/widgets/main_desktop.dart';
 import 'package:home_page/widgets/main_mobile.dart';
+import 'package:home_page/widgets/skills_desktop.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -16,8 +19,11 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
+    final screenSize = MediaQuery.of(context).size;
+    final screenWidth = screenSize.width;
     return LayoutBuilder(
       builder: (context, constraints) {
         return Scaffold(
@@ -45,9 +51,28 @@ class _HomePageState extends State<HomePage> {
 
               //Skills
               Container(
-                height: 500,
-                width: double.maxFinite,
-                color: Colors.blueGrey,
+                width: screenWidth,
+                color: CustomColor.bgLight1,
+                padding: EdgeInsets.fromLTRB(24, 20, 25, 60),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    //Title
+                    Text(
+                      'What I can do',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: CustomColor.whitePrimary,
+                      ),
+                    ),
+
+                    const SizedBox(height: 50.0),
+
+                    //PlatForms and Skills
+                    const SkillsDesktop(),
+                  ],
+                ),
               ),
               //Projects
               Container(height: 500, width: double.maxFinite),
