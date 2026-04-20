@@ -3,11 +3,13 @@ import 'package:flutter_svg/svg.dart';
 import 'package:home_page/constants/colors.dart';
 import 'package:home_page/constants/size.dart';
 import 'package:home_page/constants/skill_items.dart';
+import 'package:home_page/utils/project_utils.dart';
 import 'package:home_page/widgets/drawer_mobile.dart';
 import 'package:home_page/widgets/header_desktop.dart';
 import 'package:home_page/widgets/header_mobile.dart';
 import 'package:home_page/widgets/main_desktop.dart';
 import 'package:home_page/widgets/main_mobile.dart';
+import 'package:home_page/widgets/project_card.dart';
 import 'package:home_page/widgets/skills_desktop.dart';
 import 'package:home_page/widgets/skills_mobile.dart';
 
@@ -59,7 +61,7 @@ class _HomePageState extends State<HomePage> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     //Title
-                    Text(
+                    const Text(
                       'What I can do',
                       style: TextStyle(
                         fontSize: 24,
@@ -79,13 +81,46 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               //Projects
-              Container(height: 500, width: double.maxFinite),
+              Container(
+                width: screenWidth,
+                padding: EdgeInsets.fromLTRB(24, 20, 25, 60),
+                child: Column(
+                  children: [
+                    //Work projects title
+                    const Text(
+                      'Work Projects',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: CustomColor.whitePrimary,
+                      ),
+                    ),
+
+                    const SizedBox(height: 50),
+
+                    //Work projects cards
+                    Wrap(
+                      spacing: 25,
+                      runSpacing: 25,
+                      children: [
+                        ...workProjectUtils.map(
+                          (e) => ProjectCardWidget(project: e),
+                        ),
+
+                        // ProjectCardWidget(project: workProjectUtils.first),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+
               //Contact
               Container(
                 height: 500,
                 width: double.maxFinite,
                 color: Colors.blueGrey,
               ),
+
               //Footer
               Container(height: 500, width: double.maxFinite),
             ],
