@@ -4,12 +4,14 @@ import 'package:home_page/constants/colors.dart';
 import 'package:home_page/constants/size.dart';
 import 'package:home_page/constants/skill_items.dart';
 import 'package:home_page/utils/project_utils.dart';
+import 'package:home_page/widgets/custom_text_field.dart';
 import 'package:home_page/widgets/drawer_mobile.dart';
 import 'package:home_page/widgets/header_desktop.dart';
 import 'package:home_page/widgets/header_mobile.dart';
 import 'package:home_page/widgets/main_desktop.dart';
 import 'package:home_page/widgets/main_mobile.dart';
 import 'package:home_page/widgets/project_card.dart';
+import 'package:home_page/widgets/projects_section.dart';
 import 'package:home_page/widgets/skills_desktop.dart';
 import 'package:home_page/widgets/skills_mobile.dart';
 
@@ -80,45 +82,35 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
               ),
+
+              const SizedBox(height: 30),
+
               //Projects
+              const ProjectsSection(),
+
+              const SizedBox(height: 30),
+
+              //Contact
               Container(
-                width: screenWidth,
-                padding: EdgeInsets.fromLTRB(24, 20, 25, 60),
+                padding: EdgeInsets.fromLTRB(25, 20, 25, 60),
+                color: CustomColor.bgLight1,
                 child: Column(
                   children: [
-                    //Work projects title
-                    const Text(
-                      'Work Projects',
+                    //Title
+                    Text(
+                      'Get in touch',
                       style: TextStyle(
-                        fontSize: 24,
                         fontWeight: FontWeight.bold,
+                        fontSize: 24,
                         color: CustomColor.whitePrimary,
                       ),
                     ),
 
                     const SizedBox(height: 50),
 
-                    //Work projects cards
-                    Wrap(
-                      spacing: 25,
-                      runSpacing: 25,
-                      children: [
-                        ...workProjectUtils.map(
-                          (e) => ProjectCardWidget(project: e),
-                        ),
-
-                        // ProjectCardWidget(project: workProjectUtils.first),
-                      ],
-                    ),
+                    Row(children: [Flexible(child: const CustomTextField())]),
                   ],
                 ),
-              ),
-
-              //Contact
-              Container(
-                height: 500,
-                width: double.maxFinite,
-                color: Colors.blueGrey,
               ),
 
               //Footer
