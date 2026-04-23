@@ -4,17 +4,19 @@ import 'package:home_page/constants/colors.dart';
 class CustomTextField extends StatelessWidget {
   const CustomTextField({
     super.key,
-    required this.controller,
-    required this.maxLine,
-    required this.hintText,
+    this.controller,
+    this.maxLine = 1,
+    this.hintText,
   });
-  final TextEditingController controller;
+  final TextEditingController? controller;
   final int maxLine;
-  final String hintText;
+  final String? hintText;
 
   @override
   Widget build(BuildContext context) {
     return TextField(
+      controller: controller,
+      maxLines: maxLine,
       cursorColor: CustomColor.scaffoldBg,
       style: const TextStyle(color: CustomColor.scaffoldBg),
       decoration: InputDecoration(
@@ -24,7 +26,7 @@ class CustomTextField extends StatelessWidget {
         focusedBorder: getInputBorder,
         enabledBorder: getInputBorder,
         border: getInputBorder,
-        hintText: 'Your name',
+        hintText: hintText,
         hintStyle: TextStyle(color: CustomColor.hintDark),
       ),
     );

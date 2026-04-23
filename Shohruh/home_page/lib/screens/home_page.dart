@@ -4,6 +4,7 @@ import 'package:home_page/constants/colors.dart';
 import 'package:home_page/constants/size.dart';
 import 'package:home_page/constants/skill_items.dart';
 import 'package:home_page/utils/project_utils.dart';
+import 'package:home_page/widgets/contact_session.dart';
 import 'package:home_page/widgets/custom_text_field.dart';
 import 'package:home_page/widgets/drawer_mobile.dart';
 import 'package:home_page/widgets/header_desktop.dart';
@@ -91,27 +92,7 @@ class _HomePageState extends State<HomePage> {
               const SizedBox(height: 30),
 
               //Contact
-              Container(
-                padding: EdgeInsets.fromLTRB(25, 20, 25, 60),
-                color: CustomColor.bgLight1,
-                child: Column(
-                  children: [
-                    //Title
-                    Text(
-                      'Get in touch',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 24,
-                        color: CustomColor.whitePrimary,
-                      ),
-                    ),
-
-                    const SizedBox(height: 50),
-
-                    Row(children: [Flexible(child: const CustomTextField())]),
-                  ],
-                ),
-              ),
+              const ContactSession(),
 
               //Footer
               Container(height: 500, width: double.maxFinite),
