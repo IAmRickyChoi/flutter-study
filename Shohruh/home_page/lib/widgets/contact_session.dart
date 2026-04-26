@@ -44,7 +44,7 @@ class ContactSession extends StatelessWidget {
           //message
           ConstrainedBox(
             constraints: BoxConstraints(maxWidth: 700),
-            child: const CustomTextField(hintText: 'Your Message', maxLine: 20),
+            child: const CustomTextField(hintText: 'Your Message', maxLine: 16),
           ),
           const SizedBox(height: 20),
           //send button
@@ -54,7 +54,7 @@ class ContactSession extends StatelessWidget {
               width: double.maxFinite,
               child: ElevatedButton(
                 onPressed: () {},
-                child: Text('Get in touch'),
+                child: const Text('Get in touch'),
               ),
             ),
           ),
