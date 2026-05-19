@@ -41,9 +41,38 @@ class RestaurantCard extends StatelessWidget {
               tags.join('・'),
               style: TextStyle(color: BODY_TEXt_COLOR, fontSize: 14.0),
             ),
+            SizedBox(height: 8.0),
+            Row(
+              children: [
+                _IconText(icon: Icons.star, label: rating.toString()),
+                renderDot(),
+                _IconText(icon: Icons.receipt, label: ratingCount.toString()),
+                renderDot(),
+
+                _IconText(
+                  icon: Icons.timeline_outlined,
+                  label: '$deliveryTime 분',
+                ),
+                renderDot(),
+                _IconText(
+                  icon: Icons.monetization_on,
+                  label: deliveryFee == 0 ? '무료' : deliveryFee.toString(),
+                ),
+              ],
+            ),
           ],
         ),
       ],
+    );
+  }
+
+  Widget renderDot() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 4.0),
+      child: Text(
+        '・',
+        style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+      ),
     );
   }
 }
