@@ -38,6 +38,11 @@ class _SplashScreenState extends State<SplashScreen> {
         options: Options(headers: {'authorization': 'Bearer $refreshToken'}),
       );
 
+      await storage.write(
+        key: ACCESS_TOKEN_KEY,
+        value: resp.data['accessToken'],
+      );
+
       Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (_) => RootTab()),
         (route) => false,
